@@ -11,9 +11,8 @@ import java.util.Map;
 
 import Controllers.Controller;
 import Interface.ObservableInterface;
-import Models.Model;
-import Models.ModelPersoon;
-import Models.ModelRekening;
+import Models.ModelPerson;
+import Models.ModelAccount;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -21,38 +20,26 @@ import javax.swing.text.TabExpander;
 
 public class AccountView extends JFrame implements  ActionListener , ObservableInterface , ItemListener
 {	
-	private Controller ctlr;
-	private Model model;
-	private JPanel panel = new JPanel();
-	private JTable table ;
-	private JScrollPane scrollpane;
-	private DefaultTableModel tablemodel ;	
+	private Controller controller;
+	private ModelPerson modelPerson ;
+	private JPanel panel = new JPanel();	
 	private JTextField textBoxNewAccount ;
 	private  JComboBox comboBoxOldPerson;	
 	private JButton buttonAddAccount ;
 	private JTextArea area ;	
-	ModelPersoon selectedPerson;
+	ModelPerson selectedPerson;
 
-	public AccountView(Controller ctlr , Model mdl)
+	public AccountView(Controller controller , ModelPerson modelPerson )
 	{
-		this.ctlr = ctlr;
-		this.model = mdl ;		
+		this.controller = controller;
+		this.modelPerson = modelPerson ;		
 		this.setLocation(820, 300);		
 		this.setSize(300, 170);
 		this.setTitle("AccountView");
 		this.setVisible(true);
-		
-		
-		// creating the View for the Account	
-		tablemodel = new DefaultTableModel();	
-		tablemodel.addColumn("Person");
-		tablemodel.addColumn("AccountNumber");
-		table = new JTable(tablemodel);			
-		scrollpane = new JScrollPane(table);	
-		scrollpane.setPreferredSize(new Dimension(230, 100));
-		//panel.add(scrollpane);
-		
+				
 		textBoxNewAccount = new JTextField(5);
+		textBoxNewAccount.addActionListener(this);
 		comboBoxOldPerson = new JComboBox();
 		buttonAddAccount = new JButton("Add Account");
 		area = new JTextArea(5,17);
@@ -64,16 +51,12 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 		//panel.add(buttonAddAccount);
 		panel.add(area);
 		add(panel);
-		mdl.registerObserver(this);
+		modelPerson.registerObserver(this);
 	}	
 	
 	public void modelChanged()
 	{
-		comboBoxOldPerson.removeAllItems();		
-		for(ModelPersoon person : model.getPersonList())
-		{
-			comboBoxOldPerson.addItem(person);	
-		}
+		comboBoxOldPerson.removeAllItems();				
 	}
 	
 	public void update() {}
@@ -81,8 +64,9 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 	@Override
 	public void actionPerformed(ActionEvent event) 
 	{	
-		int number = Integer.parseInt(textBoxNewAccount.getText());			
-		ctlr.addAccount(number, selectedPerson);
+		int number = Integer.parseInt(textBoxNewAccount.getText());	
+		ModelPerson person = (ModelPerson) comboBoxOldPerson.getSelectedItem();
+		controller.addAccount(number, person);
 	}
 
 	@Override
@@ -93,9 +77,10 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 		{
 		   Object item = event.getItem();
 		   // do something with object
-		   if(item instanceof ModelPersoon) 
+		   if(item instanceof ModelPerson) 
 		      {            	
-		         selectedPerson = (ModelPersoon) item;
+		         selectedPerson = (ModelPerson) item;
+		         System.out.println("itemchanged");
 		      //  fillArea(selectedPerson);
 		      } 
 		   else
@@ -105,7 +90,7 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 		}		
 	}	
 	
-	private void fillArea(ModelRekening rekening)
+	private void fillArea(ModelAccount rekening)
 	{
 		 //area.setText("Name " + person.getNaam() + "\n" + "BSN " + person.getBsn());
 		//area.setText("Name" + rekening.getPersoon().getNaam());

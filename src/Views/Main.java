@@ -1,12 +1,13 @@
 package Views;
 
 import Controllers.Controller;
-import Models.Model;
+import Models.ModelPerson;
 
 public class Main {
 
 	public static void main(String[] args)
 	{		
-		new Controller(new Model());
+		ModelPerson modelPerson = new ModelPerson();
+		new Controller(modelPerson);
 	}
 }

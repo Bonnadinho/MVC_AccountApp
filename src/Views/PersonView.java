@@ -6,35 +6,34 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Map;
 
 import Controllers.Controller;
 import Interface.ObservableInterface;
-import Models.Model;
-import Models.ModelPersoon;
+import Models.ModelPerson;
 
 import javax.swing.*;
 
 public class PersonView extends JFrame implements ActionListener ,ItemListener, ObservableInterface
 {
 	private Controller controller;
-	private Model model;
+	ModelPerson selectedPerson;
+	ModelPerson modelPerson = new ModelPerson();
 	JPanel panel = new JPanel() ;
 	JTextField textBoxPerson , textBoxtAccountnumber;
 	JButton buttonPerson ;		
-	private  JComboBox comboBoxOldPerson;		
+	private  JComboBox comboBoxPerson;		
 	private JTextArea area ;
-	ModelPersoon selectedPerson;
 	
-	public PersonView(Controller controller , Model model)
+	
+	public PersonView(Controller controller , ModelPerson modelPerson)
 	{
 		this.controller = controller;
-		this.model = model ;		
+		this.modelPerson = modelPerson ;		
 		this.setLocation(250, 300);		
 		this.setSize(300, 210);
 		this.setTitle("PersonView");
 		this.setVisible(true);
-		model.registerObserver(this);
+		modelPerson.registerObserver(this);
 		
 		// creating the View for the Person		
 		textBoxtAccountnumber = new JTextField(10);	
@@ -42,8 +41,8 @@ public class PersonView extends JFrame implements ActionListener ,ItemListener, 
 		textBoxPerson = new JTextField(10);		
 		buttonPerson = new JButton("Add Person");	
 		buttonPerson.addActionListener(this);
-		comboBoxOldPerson = new JComboBox();	
-		comboBoxOldPerson.addItemListener(this);
+		comboBoxPerson = new JComboBox();	
+		comboBoxPerson.addItemListener(this);
 		area = new JTextArea(5,17);		
 		
 		panel.add(new JLabel("Add Person :"));
@@ -52,35 +51,31 @@ public class PersonView extends JFrame implements ActionListener ,ItemListener, 
 		panel.add(textBoxtAccountnumber);	
 		panel.add(buttonPerson);	
 		panel.add(new JLabel("Person"));
-		panel.add(comboBoxOldPerson);		
+		panel.add(comboBoxPerson);		
 		panel.add(area);
 		add(panel);
 	}
 	
 	public void actionPerformed(ActionEvent btn) 
 	{	
-		String value = textBoxPerson.getText();
-		int key = Integer.parseInt((textBoxtAccountnumber.getText()));	
-		controller.createPerson(value, key);			
+		int scn = Integer.parseInt((textBoxtAccountnumber.getText()));	
+		String name = textBoxPerson.getText();
+		
+		controller.createPerson(scn, name);			
 		textBoxPerson.setText("");
 		textBoxtAccountnumber.setText("");			
 	}
 
 	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-	}
+	public void update() 
+	{}
 
 	@Override
 	public void modelChanged()
-	{		
-		int value = 0 ;
-		String key =  null ;
-		comboBoxOldPerson.removeAllItems();		
-		for(ModelPersoon person : model.getPersonList())
-		{
-			comboBoxOldPerson.addItem(person);	
-		}
+	{			
+		comboBoxPerson.removeAllItems();	
+		comboBoxPerson.addItem(controller.personList);
+		System.out.println("ModelChanged");
 	}
 
 	@Override
@@ -91,9 +86,9 @@ public class PersonView extends JFrame implements ActionListener ,ItemListener, 
 		{
             Object item = event.getItem();
             // do something with object
-            if(item instanceof ModelPersoon) 
+            if(item instanceof ModelPerson) 
             {            	
-                selectedPerson = (ModelPersoon) item;
+                selectedPerson = (ModelPerson) item;
                 fillArea(selectedPerson);
             } 
             else
@@ -103,8 +98,8 @@ public class PersonView extends JFrame implements ActionListener ,ItemListener, 
         }
 	}	
 	
-	private void fillArea(ModelPersoon person)
+	private void fillArea(ModelPerson person)
 	{
-		 area.setText("Name " + person.getNaam() + "\n" + "BSN " + person.getBsn());
+		// area.setText("Name " + person.getNaam() + "\n" + "BSN " + person.getBsn());
 	}
 }

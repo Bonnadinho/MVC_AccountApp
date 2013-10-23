@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import Controllers.Controller;
-import Models.Model;
+import Models.ModelPerson;
 
 /* 
  * Author: Bonnadinho
@@ -21,13 +21,13 @@ import Models.Model;
 public class View extends JFrame implements ActionListener
 {
 	Controller controller;
-	Model model;
+	ModelPerson modelPerson;
 	JPanel panel ;
 	private JButton buttonperson , buttonaccount;
-	public View(Controller ctlr , Model mdl)
+	public View(Controller controller ,ModelPerson modelPerson)
 	{		
-		this.controller = ctlr;
-		this.model = mdl ;
+		this.controller = controller;
+		this.modelPerson = modelPerson ;
 		super.setSize(250, 80);	
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);

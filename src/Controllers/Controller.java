@@ -1,49 +1,47 @@
 package Controllers;
 
-import java.util.Collection;
-import java.util.Map;
 
-import Models.Model;
-import Models.ModelPersoon;
-import Models.ModelRekening;
+import java.util.ArrayList;
+
+import Models.ModelPerson;
+import Models.ModelAccount;
 import Views.AccountView;
 import Views.PersonView;
 import Views.View;
 
 public class Controller 
-{
-	Model model;
-	ModelPersoon personModel ;
-	ModelRekening accountModel ;
-	View view;
-	PersonView personView ;
-	AccountView accountView;
-	public Controller(Model mdl)
+{	
+	ModelPerson modelPerson = new ModelPerson();	
+	
+	// create an arraylist with the object "Person"
+	public ArrayList<ModelPerson> personList = new ArrayList();
+	
+	public Controller(ModelPerson modelPerson)
 	{
-		this.model = mdl;
-		view = new View(this , mdl);	
-		personModel = new ModelPersoon();
+		this.modelPerson = modelPerson;
+		View view = new View(this , modelPerson);	
 	}
 	
 	public void startPersonView()
 	{
-		personView = new PersonView(this, model);
+		PersonView personView = new PersonView(this, modelPerson);
 	}
 	
 	public void startAccountView()
 	{
-		accountView = new AccountView(this, model);
+		AccountView accountView = new AccountView(this, modelPerson);
 	}
 	
-	public void createPerson(String value , int key)
+	public void createPerson(int scn , String name )
 	{		
-		personModel.createPersoon(key, value);
-		model.setPersoon(personModel);		
+		modelPerson = new ModelPerson(scn, name);		
+		personList.add(modelPerson);
+		modelPerson.notifyObserver();
+		System.out.println("creatPerson in Cont.");		
 	}	
 	
-	public void addAccount(int number , ModelPersoon person)
+	public void addAccount(int number , ModelPerson person)
 	{		
-		accountModel.createRekening(number, person);
-		personModel.voegtoeRek(accountModel);
+		
 	}	
 }
