@@ -2,46 +2,53 @@ package Controllers;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
-import Models.ModelPerson;
-import Models.ModelAccount;
+import Models.Model;
+import Models.Person;
 import Views.AccountView;
 import Views.PersonView;
 import Views.View;
 
 public class Controller 
 {	
-	ModelPerson modelPerson = new ModelPerson();	
-	
-	// create an arraylist with the object "Person"
-	public ArrayList<ModelPerson> personList = new ArrayList();
-	
-	public Controller(ModelPerson modelPerson)
+	Model model ;
+	public Controller(Model model)
 	{
-		this.modelPerson = modelPerson;
-		View view = new View(this , modelPerson);	
+		this.model = model;
+		View view = new View(this , model);	
 	}
 	
 	public void startPersonView()
 	{
-		PersonView personView = new PersonView(this, modelPerson);
+		PersonView personView = new PersonView(this, model);
 	}
 	
 	public void startAccountView()
 	{
-		AccountView accountView = new AccountView(this, modelPerson);
+		AccountView accountView = new AccountView(this, model);
 	}
 	
+	/*
+	 * related to PersonView ONLY
+	 */
+	
 	public void createPerson(int scn , String name )
-	{		
-		modelPerson = new ModelPerson(scn, name);		
-		personList.add(modelPerson);
-		modelPerson.notifyObserver();
-		System.out.println("creatPerson in Cont.");		
+	{	
+		model.createPerson(scn, name);
 	}	
 	
-	public void addAccount(int number , ModelPerson person)
-	{		
-		
+	public ArrayList<Person> getPersonList() 
+	{
+		return model.getPersonList();
+	}
+	
+	/*
+	 * related to AccountView ONLY
+	 */
+	public void createAccount(int accountNumber , Person person )
+	{	
+		model.createAccnout(accountNumber, person);
 	}	
+	
 }

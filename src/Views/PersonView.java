@@ -9,31 +9,33 @@ import java.awt.event.KeyListener;
 
 import Controllers.Controller;
 import Interface.ObservableInterface;
-import Models.ModelPerson;
+import Models.Model;
+import Models.Person;
 
 import javax.swing.*;
 
+
 public class PersonView extends JFrame implements ActionListener ,ItemListener, ObservableInterface
 {
-	private Controller controller;
-	ModelPerson selectedPerson;
-	ModelPerson modelPerson = new ModelPerson();
+	private Controller controller;	
+	Model model ; 
 	JPanel panel = new JPanel() ;
 	JTextField textBoxPerson , textBoxtAccountnumber;
 	JButton buttonPerson ;		
 	private  JComboBox comboBoxPerson;		
 	private JTextArea area ;
+	Person person ;
 	
 	
-	public PersonView(Controller controller , ModelPerson modelPerson)
+	public PersonView(Controller controller , Model model)
 	{
 		this.controller = controller;
-		this.modelPerson = modelPerson ;		
+		this.model = model ;		
 		this.setLocation(250, 300);		
 		this.setSize(300, 210);
 		this.setTitle("PersonView");
 		this.setVisible(true);
-		modelPerson.registerObserver(this);
+		this.model.registerObserver(this);
 		
 		// creating the View for the Person		
 		textBoxtAccountnumber = new JTextField(10);	
@@ -74,32 +76,33 @@ public class PersonView extends JFrame implements ActionListener ,ItemListener, 
 	public void modelChanged()
 	{			
 		comboBoxPerson.removeAllItems();	
-		comboBoxPerson.addItem(controller.personList);
-		System.out.println("ModelChanged");
+		for(Person person : controller.getPersonList())
+		{
+			comboBoxPerson.addItem(person);
+		}		
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent event) 
-	{		
-		// door Reshad geschreven
+	{			
 		if (event.getStateChange() == ItemEvent.SELECTED) 
 		{
             Object item = event.getItem();
             // do something with object
-            if(item instanceof ModelPerson) 
+            if(item instanceof Person) 
             {            	
-                selectedPerson = (ModelPerson) item;
-                fillArea(selectedPerson);
+            	person = (Person) item;
+                fillArea(person);
             } 
             else
             {
-                selectedPerson = null;
+            	person = null;
             }
         }
 	}	
 	
-	private void fillArea(ModelPerson person)
+	private void fillArea(Person person)
 	{
-		// area.setText("Name " + person.getNaam() + "\n" + "BSN " + person.getBsn());
+		area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn());
 	}
 }

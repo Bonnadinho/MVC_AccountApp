@@ -1,38 +1,34 @@
 package Views;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 import Controllers.Controller;
 import Interface.ObservableInterface;
-import Models.ModelPerson;
-import Models.ModelAccount;
+import Models.Account;
+import Models.Model;
+import Models.Person;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.text.TabExpander;
 
 public class AccountView extends JFrame implements  ActionListener , ObservableInterface , ItemListener
 {	
-	private Controller controller;
-	private ModelPerson modelPerson ;
+	private Controller controller;	
 	private JPanel panel = new JPanel();	
 	private JTextField textBoxNewAccount ;
 	private  JComboBox comboBoxOldPerson;	
 	private JButton buttonAddAccount ;
 	private JTextArea area ;	
-	ModelPerson selectedPerson;
+	Model model;
+	Person person ;
+	int accountNumber;
 
-	public AccountView(Controller controller , ModelPerson modelPerson )
+	public AccountView(Controller controller , Model model)
 	{
-		this.controller = controller;
-		this.modelPerson = modelPerson ;		
+		this.controller = controller;	
+		this.model = model;
 		this.setLocation(820, 300);		
 		this.setSize(300, 170);
 		this.setTitle("AccountView");
@@ -41,6 +37,7 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 		textBoxNewAccount = new JTextField(5);
 		textBoxNewAccount.addActionListener(this);
 		comboBoxOldPerson = new JComboBox();
+		comboBoxOldPerson.addItemListener(this);
 		buttonAddAccount = new JButton("Add Account");
 		area = new JTextArea(5,17);
 		
@@ -51,48 +48,61 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 		//panel.add(buttonAddAccount);
 		panel.add(area);
 		add(panel);
-		modelPerson.registerObserver(this);
+		model.registerObserver(this);
 	}	
 	
 	public void modelChanged()
 	{
-		comboBoxOldPerson.removeAllItems();				
+		comboBoxOldPerson.removeAllItems();	
+		for(Person person : controller.getPersonList())
+		{
+			comboBoxOldPerson.addItem(person);
+		}				
 	}
 	
 	public void update() {}
 
 	@Override
 	public void actionPerformed(ActionEvent event) 
-	{	
-		int number = Integer.parseInt(textBoxNewAccount.getText());	
-		ModelPerson person = (ModelPerson) comboBoxOldPerson.getSelectedItem();
-		controller.addAccount(number, person);
+	{			
+		Object personObject = comboBoxOldPerson.getSelectedItem();
+		if(personObject instanceof Person)
+		{
+			this.person = (Person) personObject;
+			accountNumber = Integer.parseInt(textBoxNewAccount.getText());
+			controller.createAccount(accountNumber, person);
+			textBoxNewAccount.setText("");
+			return;
+		}
+		System.out.println("Error");
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent event)
 	{
-		// door Reshad geschreven
 		if (event.getStateChange() == ItemEvent.SELECTED) 
 		{
-		   Object item = event.getItem();
-		   // do something with object
-		   if(item instanceof ModelPerson) 
-		      {            	
-		         selectedPerson = (ModelPerson) item;
-		         System.out.println("itemchanged");
-		      //  fillArea(selectedPerson);
-		      } 
-		   else
-		      {
-		         selectedPerson = null;
-		      }
-		}		
+            Object personObject = event.getItem();            
+            if(personObject instanceof Person) 
+            {            	
+            	person = (Person) personObject;
+                fillArea(person);
+                return;
+            }            
+        }
 	}	
 	
-	private void fillArea(ModelAccount rekening)
-	{
-		 //area.setText("Name " + person.getNaam() + "\n" + "BSN " + person.getBsn());
-		//area.setText("Name" + rekening.getPersoon().getNaam());
+	private void fillArea(Person person)
+	{		
+		area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn());
+		for(Account account : model.getAccountList())
+		{			
+//			area.setText("Name " + account.getPerson().getName() + "\n" + "Social Security Number: " 
+//					+ account.getPerson().getScn() + "\n" + account.getAccountNumber());
+//			System.out.println(account.getAccountNumber());
+			area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn() +
+					"\n" + person.getAccounts());
+		}
 	}
+	
 }
