@@ -80,7 +80,7 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 	@Override
 	public void itemStateChanged(ItemEvent event)
 	{
-		if (event.getStateChange() == ItemEvent.SELECTED) 
+		if (event.getStateChange() == ItemEvent.SELECTED)
 		{
             Object personObject = event.getItem();            
             if(personObject instanceof Person) 
@@ -94,15 +94,13 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 	
 	private void fillArea(Person person)
 	{		
-		area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn());
-		for(Account account : model.getAccountList())
-		{			
-//			area.setText("Name " + account.getPerson().getName() + "\n" + "Social Security Number: " 
-//					+ account.getPerson().getScn() + "\n" + account.getAccountNumber());
-//			System.out.println(account.getAccountNumber());
-			area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn() +
-					"\n" + person.getAccounts());
+		area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn()); 
+				
+		for(Account personAccount : person.getAccounts())
+		{
+			area.append( "\n" +  "Accountnumber: "  + personAccount.getAccountNumber());
 		}
+		
 	}
 	
 }
