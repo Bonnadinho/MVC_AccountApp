@@ -72,6 +72,7 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 			accountNumber = Integer.parseInt(textBoxNewAccount.getText());
 			controller.createAccount(accountNumber, person);
 			textBoxNewAccount.setText("");
+			fillArea(person);
 			return;
 		}
 		System.out.println("Error");
@@ -94,11 +95,14 @@ public class AccountView extends JFrame implements  ActionListener , ObservableI
 	
 	private void fillArea(Person person)
 	{		
+		String accountNumber = "";
 		area.setText("Name " + person.getName() + "\n" + "Social Security Number: " + person.getScn()); 
 				
 		for(Account personAccount : person.getAccounts())
 		{
-			area.append( "\n" +  "Accountnumber: "  + personAccount.getAccountNumber());
+			accountNumber = accountNumber + personAccount.getAccountNumber() + " ";
+			area.append( "\n" +  "Accountnumber: "  + accountNumber ) ; 
+					System.out.println(personAccount.getAccountNumber());
 		}
 		
 	}
